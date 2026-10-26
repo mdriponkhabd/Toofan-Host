@@ -187,6 +187,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           logoSize: parsed.logoSize || 'lg',
           showLogoText: parsed.showLogoText ?? false,
           showAnnouncement: false,
+          domainRegisterUrl:
+            (!parsed.domainRegisterUrl || parsed.domainRegisterUrl.includes('http://toofanhost.com/cart.php?a=add&domain=register'))
+              ? 'https://panel.toofanhost.com/cart.php?a=add&domain=register'
+              : parsed.domainRegisterUrl,
           adminPassword:
             (!parsed.adminPassword || parsed.adminPassword === 'toofanadmin2026')
               ? 'Saif@2000@'

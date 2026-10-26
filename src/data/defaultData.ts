@@ -3,7 +3,7 @@ import { HostingPackage, DomainTLD, ServerLocation, AdminSettings, CouponCode, S
 export const DEFAULT_ADMIN_SETTINGS: AdminSettings = {
   loginUrl: 'http://toofanhost.com/clientarea.php', // Custom WHMCS/Portal login URL
   signupUrl: 'http://toofanhost.com/register.php',  // Custom WHMCS/Portal register URL
-  domainRegisterUrl: 'http://toofanhost.com/cart.php?a=add&domain=register',
+  domainRegisterUrl: 'https://panel.toofanhost.com/cart.php?a=add&domain=register',
   domainTransferUrl: 'http://toofanhost.com/cart.php?a=add&domain=transfer',
   useDirectLinks: true, // Direct link to custom URLs enabled by default as requested
   openInNewTab: true, // Open links in a new tab by default

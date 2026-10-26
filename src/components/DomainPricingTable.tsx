@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Globe, ArrowRight, Check } from 'lucide-react';
 
 export const DomainPricingTable: React.FC = () => {
-  const { tlds, formatPrice, addToCart, cart } = useApp();
+  const { tlds, formatPrice, addToCart, cart, adminSettings } = useApp();
 
   const handleRegister = (tld: typeof tlds[0]) => {
     const domainExample = `mybrand${tld.extension}`;
@@ -92,17 +92,16 @@ export const DomainPricingTable: React.FC = () => {
                     </td>
 
                     <td className="py-4 px-6 text-right">
-                      <button
-                        onClick={() => handleRegister(tld)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer ${
-                          inCart
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-cyan-500 hover:bg-cyan-600 text-white shadow-sm'
-                        }`}
+                      <a
+                        href={adminSettings.domainRegisterUrl || 'https://panel.toofanhost.com/cart.php?a=add&domain=register'}
+                        target={adminSettings.openInNewTab !== false ? '_blank' : '_self'}
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 rounded-xl text-xs font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white shadow-md shadow-cyan-500/25 hover:scale-[1.02]"
+                        title={`Register ${tld.extension} domain`}
                       >
-                        {inCart ? 'Added ✓' : 'Register Now'}
-                        {!inCart && <ArrowRight className="w-3.5 h-3.5" />}
-                      </button>
+                        <span>Register Now</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
                     </td>
                   </tr>
                 );

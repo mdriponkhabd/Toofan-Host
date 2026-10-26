@@ -550,7 +550,7 @@ export const AdminDashboardPage: React.FC = () => {
       resetToDefaults();
       setLoginUrl('http://toofanhost.com/clientarea.php');
       setSignupUrl('http://toofanhost.com/register.php');
-      setDomainRegisterUrl('http://toofanhost.com/cart.php?a=add&domain=register');
+      setDomainRegisterUrl('https://panel.toofanhost.com/cart.php?a=add&domain=register');
       setDomainTransferUrl('http://toofanhost.com/cart.php?a=add&domain=transfer');
       setUseDirectLinks(true);
       setOpenInNewTab(true);
@@ -1009,11 +1009,11 @@ export const AdminDashboardPage: React.FC = () => {
                       type="url"
                       value={domainRegisterUrl}
                       onChange={(e) => setDomainRegisterUrl(e.target.value)}
-                      placeholder="http://toofanhost.com/cart.php?a=add&domain=register"
+                      placeholder="https://panel.toofanhost.com/cart.php?a=add&domain=register"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono text-slate-900 dark:text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
                     />
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">
-                      উদাহরণ: <code className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">http://toofanhost.com/cart.php?a=add&domain=register</code>
+                      উদাহরণ: <code className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">https://panel.toofanhost.com/cart.php?a=add&domain=register</code>
                     </p>
                   </div>
 
