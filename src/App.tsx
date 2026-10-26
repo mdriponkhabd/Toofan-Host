@@ -42,8 +42,20 @@ const AppContent: React.FC = () => {
       setCurrentPage('admin');
     }
 
+    const handleUrlChange = () => {
+      if (checkIsAdmin()) {
+        setCurrentPage('admin');
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
   }, [setCurrentPage]);
 
   // If in Full-Page Admin Dashboard mode, render dedicated Admin view

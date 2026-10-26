@@ -30,7 +30,7 @@ export const DEFAULT_ADMIN_SETTINGS: AdminSettings = {
   footerLinkedinUrl: 'https://linkedin.com',
   footerYoutubeUrl: 'https://youtube.com',
   footerTelegramUrl: 'https://telegram.org',
-  adminPassword: 'toofanadmin2026',
+  adminPassword: 'Saif@2000@',
 };
 
 export const DEFAULT_TLDS: DomainTLD[] = [

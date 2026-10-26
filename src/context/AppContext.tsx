@@ -185,7 +185,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           logoSize: parsed.logoSize || 'lg',
           showLogoText: parsed.showLogoText ?? false,
           showAnnouncement: false,
-          adminPassword: parsed.adminPassword || DEFAULT_ADMIN_SETTINGS.adminPassword || 'toofanadmin2026',
+          adminPassword:
+            (!parsed.adminPassword || parsed.adminPassword === 'toofanadmin2026')
+              ? 'Saif@2000@'
+              : parsed.adminPassword,
         };
       }
       return DEFAULT_ADMIN_SETTINGS;

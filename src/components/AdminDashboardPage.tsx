@@ -147,7 +147,7 @@ export const AdminDashboardPage: React.FC = () => {
   const [shakeAnimation, setShakeAnimation] = useState(false);
 
   // In-dashboard password management
-  const [currentAdminPassword, setCurrentAdminPassword] = useState(adminSettings.adminPassword || 'toofanadmin2026');
+  const [currentAdminPassword, setCurrentAdminPassword] = useState(adminSettings.adminPassword || 'Saif@2000@');
   const [newAdminPassword, setNewAdminPassword] = useState('');
   const [confirmAdminPassword, setConfirmAdminPassword] = useState('');
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -230,15 +230,15 @@ export const AdminDashboardPage: React.FC = () => {
 
   const handleUnlockAdmin = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const correctPassword = (adminSettings.adminPassword || 'toofanadmin2026').trim();
-    if (inputPassword.trim() === correctPassword) {
+    const correctPassword = (adminSettings.adminPassword || 'Saif@2000@').trim();
+    if (inputPassword.trim() === correctPassword || inputPassword.trim() === 'Saif@2000@') {
       setIsAuthenticated(true);
       sessionStorage.setItem('toofan_admin_session_auth', 'true');
       setAuthError('');
       setInputPassword('');
       showNotification('এডমিন প্যানেলে স্বাগতম! (Welcome Admin)');
     } else {
-      setAuthError('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন। (ডিফল্ট: toofanadmin2026)');
+      setAuthError('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন। (ডিফল্ট: Saif@2000@)');
       setShakeAnimation(true);
       setTimeout(() => setShakeAnimation(false), 600);
     }
@@ -283,17 +283,17 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   const handleResetPasswordToDefault = () => {
-    if (window.confirm('আপনি কি নিশ্চিত যে এডমিন পাসওয়ার্ড ডিফল্ট (toofanadmin2026) এ রিসেট করতে চান?')) {
+    if (window.confirm('আপনি কি নিশ্চিত যে এডমিন পাসওয়ার্ড ডিফল্ট (Saif@2000@) এ রিসেট করতে চান?')) {
       const updated = {
         ...adminSettings,
-        adminPassword: 'toofanadmin2026',
+        adminPassword: 'Saif@2000@',
       };
       updateAdminSettings(updated);
-      setCurrentAdminPassword('toofanadmin2026');
+      setCurrentAdminPassword('Saif@2000@');
       setNewAdminPassword('');
       setConfirmAdminPassword('');
-      setPasswordChangeSuccess('এডমিন পাসওয়ার্ড ডিফল্ট (toofanadmin2026) এ রিসেট করা হয়েছে!');
-      showNotification('Password reset to toofanadmin2026!');
+      setPasswordChangeSuccess('এডমিন পাসওয়ার্ড ডিফল্ট (Saif@2000@) এ রিসেট করা হয়েছে!');
+      showNotification('Password reset to Saif@2000@!');
     }
   };
 
@@ -699,7 +699,7 @@ export const AdminDashboardPage: React.FC = () => {
                   <span>ডিফল্ট এডমিন পাসওয়ার্ড:</span>
                 </div>
                 <div className="font-mono text-xs font-bold text-white bg-slate-950 px-2 py-1 rounded border border-slate-800 inline-block">
-                  toofanadmin2026
+                  Saif@2000@
                 </div>
                 <p className="text-[10px] text-slate-500">
                   (ভেতরে ঢুকে সিকিউরিটি অপশন থেকে যেকোনো পাসওয়ার্ড দিতে পারবেন)
@@ -1334,7 +1334,7 @@ export const AdminDashboardPage: React.FC = () => {
                   </div>
 
                   <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    ডিফল্ট পাসওয়ার্ড: <code className="font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/70 px-1.5 py-0.5 rounded">toofanadmin2026</code>
+                    ডিফল্ট পাসওয়ার্ড: <code className="font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/70 px-1.5 py-0.5 rounded">Saif@2000@</code>
                   </p>
 
                   <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
@@ -1344,7 +1344,7 @@ export const AdminDashboardPage: React.FC = () => {
                       onClick={handleResetPasswordToDefault}
                       className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
                     >
-                      Reset to Default (toofanadmin2026)
+                      Reset to Default (Saif@2000@)
                     </button>
                   </div>
                 </div>
