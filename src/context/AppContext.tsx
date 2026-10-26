@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db, doc, setDoc, onSnapshot } from '../firebase';
+import { getDocFromServer } from 'firebase/firestore';
 import {
   HostingPackage,
   DomainTLD,
@@ -306,65 +308,227 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('toofan_cart', JSON.stringify(cart));
   }, [cart]);
 
+  // Real-time synchronization with Cloud Firestore (Global updates for visitors worldwide)
+  useEffect(() => {
+    // Connection health check per directive
+    try {
+      getDocFromServer(doc(db, 'settings', 'global')).catch(() => {});
+    } catch {
+      // ignore offline fallback
+    }
+
+    // 1. Global Website Settings & Links
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'global'), (snap) => {
+      if (snap.exists()) {
+        const remoteData = snap.data() as Partial<AdminSettings>;
+        setAdminSettings((prev) => ({
+          ...DEFAULT_ADMIN_SETTINGS,
+          ...prev,
+          ...remoteData,
+          adminPassword: remoteData.adminPassword || prev.adminPassword || 'Saif@2000@',
+        }));
+      } else {
+        // First run: save local/default settings to cloud database
+        setDoc(doc(db, 'settings', 'global'), adminSettings).catch(() => {});
+      }
+    }, (err) => {
+      console.warn('Firestore settings listener:', err);
+    });
+
+    // 2. Hosting Packages
+    const unsubPackages = onSnapshot(doc(db, 'content', 'packages'), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (Array.isArray(data.list) && data.list.length > 0) {
+          setPackages(data.list);
+        }
+      } else {
+        setDoc(doc(db, 'content', 'packages'), { list: packages }).catch(() => {});
+      }
+    }, (err) => {
+      console.warn('Firestore packages listener:', err);
+    });
+
+    // 3. Domain TLDs
+    const unsubTlds = onSnapshot(doc(db, 'content', 'tlds'), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (Array.isArray(data.list) && data.list.length > 0) {
+          setTlds(data.list);
+        }
+      } else {
+        setDoc(doc(db, 'content', 'tlds'), { list: tlds }).catch(() => {});
+      }
+    }, (err) => {
+      console.warn('Firestore TLDs listener:', err);
+    });
+
+    // 4. Creative Services (Embroidery & Graphics Plans)
+    const unsubServices = onSnapshot(doc(db, 'content', 'services'), (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (Array.isArray(data.embroidery)) {
+          setEmbroideryPlans(data.embroidery);
+        }
+        if (Array.isArray(data.graphics)) {
+          setGraphicsPlans(data.graphics);
+        }
+      } else {
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: embroideryPlans,
+          graphics: graphicsPlans,
+        }).catch(() => {});
+      }
+    }, (err) => {
+      console.warn('Firestore services listener:', err);
+    });
+
+    return () => {
+      unsubSettings();
+      unsubPackages();
+      unsubTlds();
+      unsubServices();
+    };
+  }, []);
+
   // Package mutations
   const updatePackage = (updated: HostingPackage) => {
-    setPackages((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+    setPackages((prev) => {
+      const next = prev.map((p) => (p.id === updated.id ? updated : p));
+      localStorage.setItem('toofan_packages', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'packages'), { list: next }).catch((e) => console.error(e));
+      return next;
+    });
   };
 
   const addPackage = (newPkg: HostingPackage) => {
-    setPackages((prev) => [...prev, newPkg]);
+    setPackages((prev) => {
+      const next = [...prev, newPkg];
+      localStorage.setItem('toofan_packages', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'packages'), { list: next }).catch((e) => console.error(e));
+      return next;
+    });
   };
 
   const deletePackage = (id: string) => {
-    setPackages((prev) => prev.filter((p) => p.id !== id));
+    setPackages((prev) => {
+      const next = prev.filter((p) => p.id !== id);
+      localStorage.setItem('toofan_packages', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'packages'), { list: next }).catch((e) => console.error(e));
+      return next;
+    });
   };
 
   // TLD mutations
   const updateTLD = (updated: DomainTLD) => {
-    setTlds((prev) => prev.map((t) => (t.extension === updated.extension ? updated : t)));
+    setTlds((prev) => {
+      const next = prev.map((t) => (t.extension === updated.extension ? updated : t));
+      localStorage.setItem('toofan_tlds', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'tlds'), { list: next }).catch((e) => console.error(e));
+      return next;
+    });
   };
 
   const addTLD = (newTld: DomainTLD) => {
     setTlds((prev) => {
       const exists = prev.some((t) => t.extension.toLowerCase() === newTld.extension.toLowerCase());
-      if (exists) {
-        return prev.map((t) => (t.extension.toLowerCase() === newTld.extension.toLowerCase() ? newTld : t));
-      }
-      return [...prev, newTld];
+      const next = exists
+        ? prev.map((t) => (t.extension.toLowerCase() === newTld.extension.toLowerCase() ? newTld : t))
+        : [...prev, newTld];
+      localStorage.setItem('toofan_tlds', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'tlds'), { list: next }).catch((e) => console.error(e));
+      return next;
     });
   };
 
   const deleteTLD = (ext: string) => {
-    setTlds((prev) => prev.filter((t) => t.extension.toLowerCase() !== ext.toLowerCase()));
+    setTlds((prev) => {
+      const next = prev.filter((t) => t.extension.toLowerCase() !== ext.toLowerCase());
+      localStorage.setItem('toofan_tlds', JSON.stringify(next));
+      setDoc(doc(db, 'content', 'tlds'), { list: next }).catch((e) => console.error(e));
+      return next;
+    });
   };
 
   // Service plans mutations (Embroidery & Graphics)
   const updateServicePlan = (updated: ServicePlan) => {
     if (updated.category === 'embroidery') {
-      setEmbroideryPlans((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      setEmbroideryPlans((prev) => {
+        const next = prev.map((p) => (p.id === updated.id ? updated : p));
+        localStorage.setItem('toofan_embroidery_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: next,
+          graphics: graphicsPlans,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     } else {
-      setGraphicsPlans((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      setGraphicsPlans((prev) => {
+        const next = prev.map((p) => (p.id === updated.id ? updated : p));
+        localStorage.setItem('toofan_graphics_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: embroideryPlans,
+          graphics: next,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     }
   };
 
   const addServicePlan = (newPlan: ServicePlan) => {
     if (newPlan.category === 'embroidery') {
-      setEmbroideryPlans((prev) => [...prev, newPlan]);
+      setEmbroideryPlans((prev) => {
+        const next = [...prev, newPlan];
+        localStorage.setItem('toofan_embroidery_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: next,
+          graphics: graphicsPlans,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     } else {
-      setGraphicsPlans((prev) => [...prev, newPlan]);
+      setGraphicsPlans((prev) => {
+        const next = [...prev, newPlan];
+        localStorage.setItem('toofan_graphics_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: embroideryPlans,
+          graphics: next,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     }
   };
 
   const deleteServicePlan = (id: string, category: 'embroidery' | 'graphics') => {
     if (category === 'embroidery') {
-      setEmbroideryPlans((prev) => prev.filter((p) => p.id !== id));
+      setEmbroideryPlans((prev) => {
+        const next = prev.filter((p) => p.id !== id);
+        localStorage.setItem('toofan_embroidery_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: next,
+          graphics: graphicsPlans,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     } else {
-      setGraphicsPlans((prev) => prev.filter((p) => p.id !== id));
+      setGraphicsPlans((prev) => {
+        const next = prev.filter((p) => p.id !== id);
+        localStorage.setItem('toofan_graphics_plans', JSON.stringify(next));
+        setDoc(doc(db, 'content', 'services'), {
+          embroidery: embroideryPlans,
+          graphics: next,
+        }).catch((e) => console.error(e));
+        return next;
+      });
     }
   };
 
   const updateAdminSettings = (newSettings: AdminSettings) => {
     setAdminSettings(newSettings);
+    localStorage.setItem('toofan_admin_settings', JSON.stringify(newSettings));
+    setDoc(doc(db, 'settings', 'global'), newSettings).catch((err) => {
+      console.error('Failed to sync settings to Firestore:', err);
+    });
   };
 
   const resetToDefaults = () => {
@@ -378,6 +542,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem('toofan_admin_settings');
     localStorage.removeItem('toofan_embroidery_plans');
     localStorage.removeItem('toofan_graphics_plans');
+
+    // Reset cloud Firestore documents to defaults
+    setDoc(doc(db, 'settings', 'global'), DEFAULT_ADMIN_SETTINGS).catch(() => {});
+    setDoc(doc(db, 'content', 'packages'), { list: DEFAULT_HOSTING_PACKAGES }).catch(() => {});
+    setDoc(doc(db, 'content', 'tlds'), { list: DEFAULT_TLDS }).catch(() => {});
+    setDoc(doc(db, 'content', 'services'), {
+      embroidery: DEFAULT_EMBROIDERY_PLANS,
+      graphics: DEFAULT_GRAPHICS_PLANS,
+    }).catch(() => {});
   };
 
   // Cart operations

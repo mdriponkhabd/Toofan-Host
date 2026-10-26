@@ -238,7 +238,7 @@ export const AdminDashboardPage: React.FC = () => {
       setInputPassword('');
       showNotification('এডমিন প্যানেলে স্বাগতম! (Welcome Admin)');
     } else {
-      setAuthError('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন। (ডিফল্ট: Saif@2000@)');
+      setAuthError('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড প্রদান করুন।');
       setShakeAnimation(true);
       setTimeout(() => setShakeAnimation(false), 600);
     }
@@ -283,7 +283,7 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   const handleResetPasswordToDefault = () => {
-    if (window.confirm('আপনি কি নিশ্চিত যে এডমিন পাসওয়ার্ড ডিফল্ট (Saif@2000@) এ রিসেট করতে চান?')) {
+    if (window.confirm('আপনি কি নিশ্চিত যে এডমিন পাসওয়ার্ড ডিফল্ট এ রিসেট করতে চান?')) {
       const updated = {
         ...adminSettings,
         adminPassword: 'Saif@2000@',
@@ -292,8 +292,8 @@ export const AdminDashboardPage: React.FC = () => {
       setCurrentAdminPassword('Saif@2000@');
       setNewAdminPassword('');
       setConfirmAdminPassword('');
-      setPasswordChangeSuccess('এডমিন পাসওয়ার্ড ডিফল্ট (Saif@2000@) এ রিসেট করা হয়েছে!');
-      showNotification('Password reset to Saif@2000@!');
+      setPasswordChangeSuccess('এডমিন পাসওয়ার্ড সফলভাবে ডিফল্ট এ রিসেট করা হয়েছে!');
+      showNotification('Password reset to default!');
     }
   };
 
@@ -656,7 +656,7 @@ export const AdminDashboardPage: React.FC = () => {
                     <Lock className="w-4 h-4 text-cyan-500" />
                   </div>
                   <input
-                    type={showGatePassword ? 'text' : 'password'}
+                    type="password"
                     value={inputPassword}
                     onChange={(e) => {
                       setInputPassword(e.target.value);
@@ -665,19 +665,11 @@ export const AdminDashboardPage: React.FC = () => {
                     placeholder="••••••••••••"
                     autoFocus
                     required
-                    className="w-full pl-10 pr-12 py-3 bg-[#060a14] border border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 rounded-xl text-sm text-white placeholder-slate-600 outline-none transition-all font-mono tracking-wider"
+                    className="w-full pl-10 pr-4 py-3 bg-[#060a14] border border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 rounded-xl text-sm text-white placeholder-slate-600 outline-none transition-all font-mono tracking-wider"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowGatePassword(!showGatePassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer"
-                    title={showGatePassword ? "পাসওয়ার্ড লুকান (Hide)" : "পাসওয়ার্ড দেখুন (Show)"}
-                  >
-                    {showGatePassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
                 </div>
-                <p className="mt-1.5 text-[11px] text-slate-500 flex items-center justify-between">
-                  <span>টাইপ করার সময় পাসওয়ার্ড গোপন থাকবে ●●●</span>
+                <p className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
+                  <span>পাসওয়ার্ড সম্পূর্ণ গোপন থাকবে (Masked)</span>
                   <span className="font-mono text-cyan-400/80">Press Enter ↵</span>
                 </p>
               </div>
@@ -690,22 +682,6 @@ export const AdminDashboardPage: React.FC = () => {
                 <span>প্রবেশ করুন (Unlock Dashboard)</span>
               </button>
             </form>
-
-            {/* Default Password Hint Box */}
-            <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
-              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] text-slate-400 space-y-1">
-                <div className="flex items-center justify-center gap-1.5 text-cyan-400 font-semibold">
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>ডিফল্ট এডমিন পাসওয়ার্ড:</span>
-                </div>
-                <div className="font-mono text-xs font-bold text-white bg-slate-950 px-2 py-1 rounded border border-slate-800 inline-block">
-                  Saif@2000@
-                </div>
-                <p className="text-[10px] text-slate-500">
-                  (ভেতরে ঢুকে সিকিউরিটি অপশন থেকে যেকোনো পাসওয়ার্ড দিতে পারবেন)
-                </p>
-              </div>
-            </div>
 
           </div>
         </div>
@@ -854,6 +830,12 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* Cloud Sync Status Indicator */}
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Cloud Synced (World Live 🌐)</span>
+            </div>
+
             {/* Live Notification Indicator */}
             {saveSuccessNotice && (
               <div className="px-3 py-1.5 rounded-xl bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md animate-in fade-in duration-200">
@@ -1333,10 +1315,6 @@ export const AdminDashboardPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    ডিফল্ট পাসওয়ার্ড: <code className="font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/70 px-1.5 py-0.5 rounded">Saif@2000@</code>
-                  </p>
-
                   <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                     <span className="text-[11px] text-slate-400">রিসেট করতে চাইলে:</span>
                     <button
@@ -1344,7 +1322,7 @@ export const AdminDashboardPage: React.FC = () => {
                       onClick={handleResetPasswordToDefault}
                       className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
                     >
-                      Reset to Default (Saif@2000@)
+                      Reset to Master Default
                     </button>
                   </div>
                 </div>

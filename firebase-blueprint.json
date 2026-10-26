@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global website settings, contacts, brand config, and links",
+      "type": "object",
+      "properties": {
+        "brandName": { "type": "string" },
+        "loginUrl": { "type": "string" },
+        "signupUrl": { "type": "string" },
+        "domainRegisterUrl": { "type": "string" },
+        "domainTransferUrl": { "type": "string" },
+        "adminPassword": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "HostingPackage": {
+      "title": "HostingPackage",
+      "description": "Hosting plans and pricing",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "priceBDTMonthly": { "type": "number" },
+        "priceBDTYearly": { "type": "number" }
+      }
+    },
+    "DomainTLD": {
+      "title": "DomainTLD",
+      "description": "Domain TLD pricing and renewal",
+      "type": "object",
+      "properties": {
+        "extension": { "type": "string" },
+        "priceBDTYearly": { "type": "number" }
+      }
+    },
+    "ServicePlan": {
+      "title": "ServicePlan",
+      "description": "Embroidery & graphics plans",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category": { "type": "string" },
+        "name": { "type": "string" },
+        "priceBDT": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "/settings/global": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global website configuration shared across the entire world"
+    },
+    "/content/packages": {
+      "schema": { "$ref": "#/entities/HostingPackage" },
+      "description": "Global hosting packages and specs"
+    },
+    "/content/tlds": {
+      "schema": { "$ref": "#/entities/DomainTLD" },
+      "description": "Global domain TLD extensions and pricing"
+    },
+    "/content/services": {
+      "schema": { "$ref": "#/entities/ServicePlan" },
+      "description": "Global embroidery and graphics plans"
+    }
+  }
+}
