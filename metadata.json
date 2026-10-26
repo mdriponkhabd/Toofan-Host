@@ -1,0 +1,6 @@
+{
+  "name": "ToofanHost - Supercharged NVMe Cloud Hosting & Domains",
+  "description": "Lightning-fast domain registration and NVMe cloud hosting platform. Unstoppable speed, 99.99% uptime, LiteSpeed cPanel, and 24/7 dedicated support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
